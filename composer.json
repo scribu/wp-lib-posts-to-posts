@@ -1,0 +1,9 @@
+{
+    "name": "scribu/lib-posts-to-posts",
+    "homepage": "https://github.com/scribu/wp-lib-posts-to-posts",
+    "license": "GPL-2.0+",
+    "minimum-stability": "dev",
+    "require": {
+        "scribu/scb-framework": "dev-master"
+    }
+}
