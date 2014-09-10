@@ -182,7 +182,7 @@ class P2P_BP_Group_Query {
 
 		$qv =& $this->query_vars;
 		
-		$this->query_fields = "$table.id, $table.name, $table.slug";
+		$this->query_fields = "$table.id, $table.name, $table.status, $table.slug";
 		$this->query_from = "FROM $table";
 		$this->query_where = "WHERE 1=1";
 		$this->query_orderby = "ORDER BY name ASC";
