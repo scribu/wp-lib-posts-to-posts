@@ -3,10 +3,10 @@
 class P2P_Query_Bpgroup {
 
     static function init() {
-        add_action( 'pre_user_query', array( __CLASS__, 'pre_user_query' ), 20 );
+        add_action( 'pre_bpgroup_query', array( __CLASS__, 'pre_bpgroup_query' ), 20 );
     }
 
-    static function pre_user_query( $query ) {
+    static function pre_bpgroup_query( $query ) {
         global $wpdb,$bp;
 
         $r = P2P_Query::create_from_qv( $query->query_vars, 'bpgroup' );
@@ -35,7 +35,7 @@ class P2P_Query_Bpgroup {
         foreach ( $map as $clause => $key )
             $clauses[$clause] = $query->$key;
 
-	$table = $bp->groups->table_name;
+		$table = $bp->groups->table_name;
         $clauses = $p2p_q->alter_clauses( $clauses, "$table.id" );
 
         if ( 0 !== strpos( $clauses['orderby'], 'ORDER BY ' ) )
@@ -45,4 +45,5 @@ class P2P_Query_Bpgroup {
             $query->$key = $clauses[ $clause ];
     }
 }
+
 ?>
