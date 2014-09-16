@@ -102,9 +102,15 @@ class P2P_Side_Bpgroup extends P2P_Side {
 	}
 
 	protected function recognize( $arg ) {
-		if ( is_a( $arg, 'P2P_BP_Group_Query' ) )
-			return $arg;
+		
+		if ( is_object( $arg ))
+			return false;
 
-		return false;
+		$group = groups_get_group( array( 'group_id' => $arg) );
+
+		if ( !is_object( $group ) )
+			return false;
+
+		return $group;
 	}
 }

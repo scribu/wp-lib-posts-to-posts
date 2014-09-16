@@ -44,6 +44,17 @@ class P2P_Query_Bpgroup {
         foreach ( $map as $clause => $key )
             $query->$key = $clauses[ $clause ];
     }
+
+	/**
+	 * Pre-populates the p2p meta cache to decrease the number of queries.
+	 */
+	static function cache_p2p_meta( $the_posts, $wp_query ) {
+		if ( isset( $wp_query->_p2p_query ) && !empty( $the_posts ) )
+			update_meta_cache( 'p2p', wp_list_pluck( $the_posts, 'p2p_id' ) );
+
+		return $the_posts;
+	}
+	
 }
 
 ?>

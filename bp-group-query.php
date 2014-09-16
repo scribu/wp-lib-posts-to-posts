@@ -62,6 +62,7 @@ class P2P_BP_Group_Query {
 		global $wpdb,$bp;
 
 		$table = $bp->groups->table_name;
+
 		if ( empty( $this->query_vars ) || ! empty( $query ) ) {
 			$this->query_limit = null;
 			$this->query_vars = wp_parse_args( $query, array(
@@ -89,7 +90,7 @@ class P2P_BP_Group_Query {
 		$search = '';
 		if ( isset( $qv['search'] ) )
 			$search = trim( $qv['search'] );
-
+		
 		if ( $search ) {
 			$leading_wild = ( ltrim($search, '*') != $search );
 			$trailing_wild = ( rtrim($search, '*') != $search );
@@ -109,13 +110,16 @@ class P2P_BP_Group_Query {
 			$this->query_where .= $this->get_search_sql( $search, $search_columns, $wild );
 		}
 
-		if ( ! empty( $qv['include'] ) ) {
+		if( ! empty( $qv['include'] ) ) {
 			$ids = implode( ',', wp_parse_id_list( $qv['include'] ) );
-			$this->query_where .= " AND $table.id IN ($ids)";
+			$this->query_where .= " AND $table.id IN ($ids)";			
 		} elseif ( ! empty( $qv['exclude'] ) ) {
 			$ids = implode( ',', wp_parse_id_list( $qv['exclude'] ) );
 			$this->query_where .= " AND $table.id NOT IN ($ids)";
+		} elseif( empty( $qv['include']) &&  empty( $qv['exclude'] )   && empty($qv['search'] )) {
+			$this->query_where .= " AND 1=0 ";
 		}
+		do_action_ref_array( 'pre_bpgroup_query', array( &$this ) );
 	}
 
 	/**
@@ -131,7 +135,7 @@ class P2P_BP_Group_Query {
 		$qv =& $this->query_vars;
 
 		$query = "SELECT $this->query_fields $this->query_from $this->query_where $this->query_orderby $this->query_limit";
-
+		
 		$this->results = $wpdb->get_results( $query );
 
 		if ( isset( $qv['count_total'] ) && $qv['count_total'] )
@@ -159,7 +163,7 @@ class P2P_BP_Group_Query {
 		$leading_wild = ( 'leading' == $wild || 'both' == $wild ) ? '%' : '';
 		$trailing_wild = ( 'trailing' == $wild || 'both' == $wild ) ? '%' : '';
 		foreach ( $cols as $col ) {
-			if ( 'ID' == $col )
+			if ( 'id' == $col )
 				$searches[] = "$col = '$string'";
 			else
 				$searches[] = "$col LIKE '$leading_wild" . like_escape($string) . "$trailing_wild'";
@@ -176,3 +180,4 @@ class P2P_BP_Group_Query {
 		return $this->total_bp_groups;
 	}
 }
+?>
