@@ -109,17 +109,19 @@ class P2P_BP_Group_Query {
 
 			$this->query_where .= $this->get_search_sql( $search, $search_columns, $wild );
 		}
+		
+		$query = "SELECT * FROM $wpdb->p2p WHERE p2p_type = '".$qv['connected_type']."'";
+        $connected = $wpdb->get_col($query, 2);
 
-		if( ! empty( $qv['include'] ) ) {
-			$ids = implode( ',', wp_parse_id_list( $qv['include'] ) );
-			$this->query_where .= " AND $table.id IN ($ids)";			
-		} elseif ( ! empty( $qv['exclude'] ) ) {
-			$ids = implode( ',', wp_parse_id_list( $qv['exclude'] ) );
+		if ( empty($qv['search']) && $connected) {
+			$ids = implode( ',', $connected );
+			$this->query_where .= " AND $table.id IN ($ids)";	
+		} elseif ($connected) {
+			$ids = implode( ',', $connected );
 			$this->query_where .= " AND $table.id NOT IN ($ids)";
-		} elseif( empty( $qv['include']) &&  empty( $qv['exclude'] )   && empty($qv['search'] )) {
+		} else {
 			$this->query_where .= " AND 1=0 ";
 		}
-		do_action_ref_array( 'pre_bpgroup_query', array( &$this ) );
 	}
 
 	/**
@@ -179,5 +181,7 @@ class P2P_BP_Group_Query {
 	function get_total() {
 		return $this->total_bp_groups;
 	}
+	
+	
 }
 ?>
