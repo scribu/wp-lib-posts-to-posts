@@ -75,7 +75,7 @@ class P2P_BP_Group_Query {
 		$qv =& $this->query_vars;
 		
 		$this->query_fields = "$table.id, $table.name, $table.status, $table.slug";
-		$this->query_from = "FROM $table";
+		$this->query_from = "FROM $table "; 
 		$this->query_where = "WHERE 1=1";
 		$this->query_orderby = "ORDER BY name ASC";
 
@@ -114,14 +114,22 @@ class P2P_BP_Group_Query {
         $connected = $wpdb->get_col($query, 2);
 
 		if ( empty($qv['search']) && $connected) {
-			$ids = implode( ',', $connected );
-			$this->query_where .= " AND $table.id IN ($ids)";	
-		} elseif ($connected) {
-			$ids = implode( ',', $connected );
-			$this->query_where .= " AND $table.id NOT IN ($ids)";
-		} else {
-			$this->query_where .= " AND 1=0 ";
-		}
+            $this->query_fields .= ", $wpdb->p2p.*";
+            $this->query_from .= " INNER JOIN $wpdb->p2p ON $table.id = $wpdb->p2p.p2p_to AND $wpdb->p2p.p2p_type = '".$qv['connected_type']."'";
+
+            $ids = implode( ',', $connected );
+            $this->query_where .= " AND $table.id IN ($ids)";
+        } elseif ($connected) {
+        	$ids = implode( ',', $connected );
+            $this->query_where .= " AND $table.id NOT IN ($ids)";
+        } elseif ( empty($qv['search'])){
+            $this->query_where .= " AND 1=0 ";
+        }
+
+		if(!empty($qv['parent'])) {
+            $this->query_where .= " AND $table.parent_id = ".$qv['parent'];
+        }
+		
 	}
 
 	/**
