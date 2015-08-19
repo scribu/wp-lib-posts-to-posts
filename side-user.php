@@ -83,7 +83,8 @@ class P2P_Side_User extends P2P_Side {
 			'number' => '',
 			'count_total' => true,
 			'fields' => 'all',
-			'who' => ''
+			'who' => '',
+			'has_published_posts' => null,
 		) );
 
 		$uq->prepare_query();
