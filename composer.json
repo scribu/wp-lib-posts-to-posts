@@ -5,7 +5,7 @@
     "license": "GPL-2.0+",
     "minimum-stability": "dev",
     "require": {
-        "scribu/scb-framework": "dev-master"
+        "scribu/scb-framework": "dev-build-step"
     },
     "autoload": {
         "files": ["autoload.php"]
