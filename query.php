@@ -130,7 +130,7 @@ class P2P_Query {
 			'p2p:per_page' => -1
 		) );
 		
-		$qv = apply_filters( 'p2p_other_query_args', $qv );
+		$qv = apply_filters( 'p2p_other_query_args', $qv, $directed, $which );
 
 		if ( 'any' != $this->items )
 			$qv['p2p:include'] = _p2p_normalize( $this->items );
