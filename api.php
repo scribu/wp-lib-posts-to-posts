@@ -181,6 +181,37 @@ function p2p_get_connection( $p2p_id ) {
 }
 
 /**
+ * Get a list of connection types relevant to a single post.
+ *
+ * Given a post ID, this function returns an array of connection types for which the
+ * post has active connections. If the post has no connected posts, the function will
+ * return false.
+ *
+ * @param $post_id int ID of the post for which to fetch connection types
+ *
+ * @return array|bool An array of connection types or false if there are no connected posts
+ */
+function p2p_get_connection_types_for_post( $post_id ) {
+	global $wpdb;
+
+	// Get the connection types for this post from the DB
+	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT p2p_type FROM %1$s WHERE p2p_from = %2$d OR p2p_to = %2$d', $wpdb->p2p, intval( $post_id ) ) );
+
+	// Discontinue if there are no results
+	if ( empty( $rows) || is_null( $rows ) )
+		return false;
+
+	// Pluck out the connection types from each result row
+	$rows = wp_list_pluck( $rows, 'p2p_type' );
+
+	// Remove duplicates
+	$rows = array_unique( $rows );
+
+	return array_values( $rows );
+
+}
+
+/**
  * Create a connection.
  *
  * @param int $p2p_type A valid connection type.
